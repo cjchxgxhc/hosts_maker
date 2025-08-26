@@ -24,8 +24,7 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/114.0.0.0 Safari/
 # 内嵌黑白名单配置
 BLACKLIST_CONFIG = {
     "ads": [
-        "https://raw.githubusercontent.com/cjchxgxhc/ad-filters-subscriber/refs/heads/release/hosts.txt",
-        "https://anti-ad.net/domains.txt"
+        "https://raw.githubusercontent.com/cjchxgxhc/ad-filters-subscriber/refs/heads/release/hosts.txt"
     ]
 }
 # 白名单配置
