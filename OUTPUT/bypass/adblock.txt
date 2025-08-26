@@ -134,7 +134,6 @@
 ||adguard.maison.gifino.fr^
 ||adguard.marto.si^
 ||adguard.meddy94.de^
-||adguard.mrmartian.co^
 ||adguard.oms-ctr.ru^
 ||adguard.onlyfriends.info^
 ||adguard.pangerl.it^
@@ -2603,7 +2602,6 @@
 ||spr.io^
 ||sql01.com^
 ||sqlconcepts.com^
-||squidmall.vip^
 ||squirly.info^
 ||sriedmueadguard.casa^
 ||srv64.de^
