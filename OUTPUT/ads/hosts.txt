@@ -1,5 +1,5 @@
-# 生成时间: 2025-08-26 15:45:07
-# 域名数量: 23373
+# 生成时间: 2025-08-26 15:49:05
+# 域名数量: 23374
 # 规则组: ads
 
 127.0.0.1  0-bloghkgadv.app.salemove.com
@@ -13177,6 +13177,7 @@
 127.0.0.1  misc.api.snaptube.app
 127.0.0.1  misc.pandora.xiaomi.com
 127.0.0.1  misc.wcd.qq.com
+127.0.0.1  mishop.pandora.xiaomi.com
 127.0.0.1  mission-pub.smart-tv.cn
 127.0.0.1  miui-fxcse.avlyun.com
 127.0.0.1  miui.hftaili.com
