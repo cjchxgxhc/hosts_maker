@@ -9,7 +9,7 @@ from typing import Set, List, Optional, Tuple, Dict
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# 配置常量（未改动）
+# 配置常量
 CHUNK_SIZE = 200_000
 MAX_DOMAIN_LENGTH = 253
 WORKER_COUNT = min(mp.cpu_count() * 4, 16)
@@ -21,33 +21,24 @@ RETRY_COUNT = 3
 RETRY_DELAY = 3
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/114.0.0.0 Safari/537.36"
 
-# 内嵌黑白名单配置（已按前序需求修改：仅ads组、指定黑名单URL）
+# 内嵌黑白名单配置
 BLACKLIST_CONFIG = {
     "ads": [
-        "https://raw.githubusercontent.com/cjchxgxhc/ad-filters-subscriber/refs/heads/release/hosts.txt"
+        "https://raw.githubusercontent.com/cjchxgxhc/ad-filters-subscriber/refs/heads/release/hosts.txt",
+        "https://anti-ad.net/domains.txt"
     ]
 }
-# 白名单配置（完全不变）
+# 白名单配置
 WHITELIST_CONFIG = {
     "ads": [
         "https://raw.githubusercontent.com/cjchxgxhc/domain-filter/refs/heads/main/rules/ads_white.txt",
         "https://raw.githubusercontent.com/hagezi/dns-blocklists/refs/heads/main/domains/tif.txt",
         "https://raw.githubusercontent.com/hagezi/dns-blocklists/refs/heads/main/share/dead.list-aa",
         "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/nsfw-onlydomains.txt"
-    ],
-    "ads_lite": [
-        "https://raw.githubusercontent.com/cjchxgxhc/domain-filter/refs/heads/main/rules/ads_white.txt"
-    ],
-    "proxy": [
-        "https://raw.githubusercontent.com/cjchxgxhc/domain-filter/refs/heads/main/rules/proxy_white.txt",
-        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Notion/Notion.list",
-        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/ChinaMaxNoIP/ChinaMaxNoIP.list",
-        "https://raw.githubusercontent.com/hagezi/dns-blocklists/refs/heads/main/domains/pro.txt",
-        "https://raw.githubusercontent.com/Aethersailor/Custom_OpenClash_Rules/refs/heads/main/rule/Custom_Direct.list"
     ]
 }
 
-# 正则表达式（未改动）
+# 正则表达式
 DOMAIN_PATTERN = re.compile(
     r"^(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+)[a-zA-Z]{2,}$",
     re.IGNORECASE
