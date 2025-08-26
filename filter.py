@@ -24,7 +24,10 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/114.0.0.0 Safari/
 # 内嵌黑白名单配置
 BLACKLIST_CONFIG = {
     "ads": [
-        "https://raw.githubusercontent.com/cjchxgxhc/ad-filters-subscriber/refs/heads/release/hosts.txt"
+        "https://raw.githubusercontent.com/lingeringsound/10007_auto/master/reward",
+        "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockhostslite.txt",
+        "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.oppo-realme.txt",
+        "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-hosts.txt"
     ]
 }
 # 白名单配置
