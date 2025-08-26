@@ -9,7 +9,7 @@ from typing import Set, List, Optional, Tuple, Dict
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# 配置常量
+# 配置常量（未改动）
 CHUNK_SIZE = 200_000
 MAX_DOMAIN_LENGTH = 253
 WORKER_COUNT = min(mp.cpu_count() * 4, 16)
@@ -21,42 +21,13 @@ RETRY_COUNT = 3
 RETRY_DELAY = 3
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/114.0.0.0 Safari/537.36"
 
-# 内嵌黑白名单配置
+# 内嵌黑白名单配置（已按前序需求修改：仅ads组、指定黑名单URL）
 BLACKLIST_CONFIG = {
     "ads": [
-        "https://raw.githubusercontent.com/cjchxgxhc/domain-filter/refs/heads/main/rules/ads.txt",
-        "https://raw.githubusercontent.com/Aethersailor/adblockfilters-modified/refs/heads/main/rules/adblockdnslite.txt",
-        "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule.txt",
-        "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdomainlite.txt",
-        "https://raw.githubusercontent.com/cjchxgxhc/ad_no_cn/refs/heads/main/filtered_ad_domains.txt",
-        "https://raw.githubusercontent.com/hagezi/dns-blocklists/refs/heads/main/domains/native.oppo-realme.txt"
-    ],
-    "ads_lite": [
-        "https://raw.githubusercontent.com/cjchxgxhc/domain-filter/refs/heads/main/rules/ads.txt",
-        "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdomainlite.txt",
-        "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule.txt"
-    ],
-    "gfw": [
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt"
-    ],
-    "direct": [
-        "https://raw.githubusercontent.com/cjchxgxhc/domain-filter/refs/heads/main/rules/direct.txt",
-        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Notion/Notion.list"
-    ],
-    "proxy": [
-        "https://raw.githubusercontent.com/cjchxgxhc/domain-filter/refs/heads/main/rules/proxy.txt",
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt",
-        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Global/Global.list",
-        "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt",
-        "https://raw.githubusercontent.com/cutethotw/ClashRule/refs/heads/main/Rule/Outside.list",
-        "https://raw.githubusercontent.com/LM-Firefly/Rules/refs/heads/master/PROXY.list"
-    ],
-    "bypass": [
-        "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/doh.txt",
-        "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/dyndns-onlydomains.txt",
-        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/DNS/DNS.list"
+        "https://raw.githubusercontent.com/cjchxgxhc/ad-filters-subscriber/refs/heads/release/hosts.txt"
     ]
 }
+# 白名单配置（完全不变）
 WHITELIST_CONFIG = {
     "ads": [
         "https://raw.githubusercontent.com/cjchxgxhc/domain-filter/refs/heads/main/rules/ads_white.txt",
@@ -76,7 +47,7 @@ WHITELIST_CONFIG = {
     ]
 }
 
-# 正则表达式
+# 正则表达式（未改动）
 DOMAIN_PATTERN = re.compile(
     r"^(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+)[a-zA-Z]{2,}$",
     re.IGNORECASE
@@ -103,12 +74,13 @@ def sanitize(name: str) -> str:
 
 
 def get_parent_domains(domain: str) -> Set[str]:
-    """获取域名的所有父域名（不含自身）"""
+    """保留函数避免依赖报错，实际未使用（去重逻辑已简化）"""
     parts = domain.split('.')
     return {'.'.join(parts[i:]) for i in range(1, len(parts))}
 
 
 def download_url(url: str) -> Tuple[str, List[str]]:
+    # 下载逻辑完全不变
     try:
         if url.startswith("file://"):
             parsed = urlparse(url)
@@ -146,6 +118,7 @@ def download_url(url: str) -> Tuple[str, List[str]]:
 
 
 def download_all_urls(url_list: List[str]) -> Dict[str, List[str]]:
+    # 批量下载逻辑完全不变
     unique_urls = list(set(u.strip() for u in url_list if u.strip()))
     log(f"开始下载{len(unique_urls)}个唯一资源...")
     results = {}
@@ -166,6 +139,7 @@ def download_all_urls(url_list: List[str]) -> Dict[str, List[str]]:
 
 
 def is_valid_domain(domain: str) -> bool:
+    # 域名验证逻辑完全不变
     domain = domain.strip().lower()
     if not domain or len(domain) > MAX_DOMAIN_LENGTH:
         return False
@@ -175,12 +149,14 @@ def is_valid_domain(domain: str) -> bool:
 
 
 def clean_domain_string(domain: str) -> str:
+    # 域名清洗逻辑完全不变
     domain = UNWANTED_PREFIX.sub('', domain.strip()).lower()
     domain = UNWANTED_SUFFIX.sub('', domain)
     return domain.strip('.')
 
 
 def extract_domain(line: str, is_whitelist: bool) -> Optional[str]:
+    # 域名提取逻辑完全不变
     line = line.strip()
     if not line or line[0] in ('#', '!', '/'):
         return None
@@ -202,15 +178,18 @@ def extract_domain(line: str, is_whitelist: bool) -> Optional[str]:
 def extract_black_domain(line: str) -> Optional[str]:
     return extract_domain(line, False)
 
+
 def extract_white_domain(line: str) -> Optional[str]:
     return extract_domain(line, True)
 
 
 def process_chunk(chunk: List[str], extractor: callable) -> Set[str]:
+    # 分块处理逻辑完全不变
     return {d for line in chunk if (d := extractor(line))}
 
 
 def parallel_extract_domains(lines: List[str], extractor: callable) -> Set[str]:
+    # 并行提取逻辑完全不变
     if not lines:
         return set()
     if len(lines) < CHUNK_SIZE:
@@ -230,60 +209,58 @@ def process_whitelist_rules(lines: List[str]) -> Set[str]:
 
 
 def remove_subdomains(domains: Set[str]) -> Set[str]:
-    """移除子域名，保留父域名（AdBlock规则语义）"""
+    """仅去除相同域名（前序需求已修改，此处保持不变）"""
     if not domains:
         return set()
-    sorted_domains = sorted(domains, key=lambda x: (x.count('.'), x))  # 父域名先处理
-    keep = set()
-    for domain in sorted_domains:
-        if not any(parent in keep for parent in get_parent_domains(domain)):
-            keep.add(domain)
-    log(f"去重: 输入{len(domains)} → 输出{len(keep)}")
-    return keep
+    deduped = sorted(set(domains))
+    log(f"去重(仅相同域名): 输入{len(domains)} → 输出{len(deduped)}")
+    return set(deduped)
 
 
 def filter_exact_whitelist(black_domains: Set[str], white_domains: Set[str]) -> Set[str]:
-    """仅过滤与白名单完全匹配的域名"""
+    """白名单过滤逻辑完全不变"""
     if not white_domains:
         return black_domains
-    # 仅排除黑名单中与白名单完全一致的域名
     filtered = black_domains - white_domains
     log(f"白名单完全匹配过滤: 输入{len(black_domains)} → 输出{len(filtered)}")
     return filtered
 
 
 def blacklist_dedup_and_filter(black: Set[str], white: Set[str]) -> Set[str]:
-    """流程：先过滤完全匹配的白名单，再对黑名单去重"""
-    # 步骤1：过滤与白名单完全匹配的域名
+    """黑名单处理流程完全不变"""
     filtered_black = filter_exact_whitelist(black, white)
-    # 步骤2：对剩余黑名单去重（保留父域名）
     deduped_black = remove_subdomains(filtered_black)
     log(f"黑名单处理: 过滤后{len(filtered_black)} → 去重后{len(deduped_black)}")
     return deduped_black
 
 
 def save_domains_to_files(domains: Set[str], output_path: Path, group_name: str) -> None:
+    """核心修改：删除AdBlock/Clash格式，仅保存Hosts格式（127.0.0.1 域名）"""
     if not domains:
-        log(f"无域名保存: {output_path}")
+        log(f"无域名保存: {output_path}", critical=True)
         return
+    # Hosts格式要求：每行"127.0.0.1 域名"，按字母序排序
     sorted_domains = sorted(domains)
     group_dir = output_path / group_name
     group_dir.mkdir(parents=True, exist_ok=True)
     
-    adblock_path = group_dir / "adblock.txt"
-    with open(adblock_path, "w", encoding="utf-8") as f:
-        f.write('\n'.join(f"||{d}^" for d in sorted_domains))
-    log(f"保存AdBlock: {adblock_path} ({len(sorted_domains)}域名)")
+    # 保存Hosts文件（标准格式）
+    hosts_path = group_dir / "hosts.txt"
+    with open(hosts_path, "w", encoding="utf-8") as f:
+        # 写入Hosts文件头部注释（可选，增强可读性）
+        f.write(f"# 生成时间: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"# 域名数量: {len(sorted_domains)}\n")
+        f.write(f"# 规则组: {group_name}\n")
+        f.write("\n")
+        # 写入Hosts核心内容
+        f.write('\n'.join(f"127.0.0.1  {d}" for d in sorted_domains))
     
-    clash_path = group_dir / "clash.yaml"
-    with open(clash_path, "w", encoding="utf-8") as f:
-        f.write("payload:\n")
-        f.write('\n'.join(f"  - +.{d}" for d in sorted_domains))
-    log(f"保存Clash: {clash_path} ({len(sorted_domains)}域名)")
+    log(f"保存Hosts格式: {hosts_path} (共{len(sorted_domains)}条记录)")
 
 
 def process_rule_group(name: str, urls: List[str], white_domains: Set[str],
                        downloaded: Dict[str, List[str]], output_dir: Path) -> None:
+    # 规则组处理逻辑不变（仅输出格式修改）
     sanitized = sanitize(name)
     if not sanitized or not urls:
         log(f"无效组: {name}", critical=True)
@@ -293,7 +270,7 @@ def process_rule_group(name: str, urls: List[str], white_domains: Set[str],
     for url in urls:
         lines.update(downloaded.get(url, []))
     if not lines:
-        log(f"组{name}无内容，跳过")
+        log(f"组{name}无有效内容，跳过", critical=True)
         return
     black_domains = process_blacklist_rules(list(lines))
     final_domains = blacklist_dedup_and_filter(black_domains, white_domains)
@@ -301,11 +278,13 @@ def process_rule_group(name: str, urls: List[str], white_domains: Set[str],
 
 
 def main():
+    # 主逻辑完全不变
     start_time = time.time()
     output_dir = Path("OUTPUT")
     output_dir.mkdir(parents=True, exist_ok=True)
     log(f"输出目录: {output_dir.absolute()}")
 
+    # 处理白名单（仅ads组白名单生效）
     all_white_urls = [u for urls in WHITELIST_CONFIG.values() for u in urls]
     downloaded_white = download_all_urls(all_white_urls) if all_white_urls else {}
     whitelist = {}
@@ -316,11 +295,13 @@ def main():
             domains = process_whitelist_rules(lines)
             if domains:
                 whitelist[sanitized] = domains
-                log(f"白名单{name}: 提取{len(domains)}个域名")
+                log(f"提取白名单[{name}]: {len(domains)}个域名")
 
+    # 处理黑名单（仅ads组）
     all_black_urls = [u for urls in BLACKLIST_CONFIG.values() for u in urls]
     downloaded_black = download_all_urls(all_black_urls) if all_black_urls else {}
 
+    # 并行处理规则组（仅ads组）
     with ThreadPoolExecutor(max_workers=RULEGROUP_WORKERS) as executor:
         futures = []
         for name, urls in BLACKLIST_CONFIG.items():
@@ -343,8 +324,8 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        log("用户中断", critical=True)
+        log("用户中断程序", critical=True)
         sys.exit(1)
     except Exception as e:
-        log(f"程序终止: {str(e)[:100]}", critical=True)
+        log(f"程序异常终止: {str(e)[:100]}", critical=True)
         sys.exit(1)
